@@ -2,20 +2,20 @@ import java.io.File
 import kotlin.math.max
 
 fun main() {
-    val INPUT = "/Users/saalik/dev/aoc/aoc/src/main/2/full"
+    val INPUT = "./src/main/2/simple"
     val BLUE    : Int = 14
     val RED     : Int = 12
     val GREEN   : Int = 13
 
-    var res : Int = 0
-    var res2 : Int = 0
+    var res     : Int = 0
+    var res2    : Int = 0
 
     File(INPUT).forEachLine {
         var game : Int
         var games : Array<String> = arrayOf()
-        var isValid : Boolean = true;
+        var isValid : Boolean = true
         val seq = it.split(":")
-        var minB : Int = 0
+        var minB  : Int = 0
         var minR : Int = 0
         var minG : Int = 0
 
