@@ -1,13 +1,13 @@
+package main.`3`
+
 import java.io.File
 
 data class Gear (val row : Int, val col : Int)
 
 
 fun main() {
-
-    val inputFilePath = "./aoc/src/main/3/small"
+    val inputFilePath = "full"
     val activationPoint = mutableMapOf<Int, MutableList<Int>>()
-
     val gears = mutableMapOf<Gear, MutableList<Int>>() // Map of gear to list of numbers
 
     val lines = File(inputFilePath).useLines { it.toList() } // Read file lines once
@@ -28,6 +28,8 @@ fun main() {
             }
         }
     }
+
+    println("Number of gears: ${gears.size}")
 
     var res = 0
     val numberBuilder = StringBuilder()
@@ -57,7 +59,7 @@ fun main() {
         }
 
     }
-    println("Result is $res")
+    println("Result for part 1 is $res")
 
     gears.forEach { (gear, _) ->
         gears[gear] = searchGearNeighbours(gear, charArray).toMutableList()
@@ -67,6 +69,8 @@ fun main() {
         .map { (_, value) -> value.reduce { acc, i -> acc * i } }
         .reduce { acc, i -> acc + i }
         .let { println("Result for part 2 is $it") }
+
+    
 }
 
 fun <K, V> MutableMap<K, MutableList<V>>.addToMultimap(key: K, value: V) {
@@ -100,10 +104,19 @@ fun searchGearNeighbours(gear: Gear, charArray: Array<CharArray>) : List<Int> {
                 str.clear()
             }
         }
+        if (str.isNotEmpty() && isNear) {
+            neighbours.add(str.toString().toInt())
+            isNear = false
+        }
         str.clear()
+    }
+    if (neighbours.size == 2) {
+        // Pretty print for debugging
+        println("${neighbours[0]},${neighbours[1]}")
     }
     return neighbours
 }
+
 fun isNearTheGear(row: Int, index: Int, gear: Gear): Boolean {
     val (gearRow, gearCol) = gear
     return (row in gearRow-1..gearRow+1 && index in gearCol-1..gearCol+1)

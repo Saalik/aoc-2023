@@ -1,0 +1,212 @@
+import java.io.File
+
+class Mapping {
+    val src: Long
+    val des: Long
+    val range: Long
+
+    constructor(src: Long, des: Long, range: Long) {
+        this.src = src
+        this.des = des
+        this.range = range
+    }
+
+    fun getOrKey(key: Long): Long {
+        if ( key >= src && key < src+range ) {
+            return des + (key-src)
+        }
+        return key
+    }
+
+    fun isPresent(key: Long): Boolean {
+        return key >= src && key < src+range
+    }
+
+}
+
+
+
+fun main() {
+    val inputFilePath = "full"
+    var lines = File(inputFilePath).readLines().toMutableList()
+    val seeds = lines.removeAt(0).split(":").last().trim().split("\\s+".toRegex()).map { it.toLong() }
+
+    var seedToSoil = arrayOf<Mapping>()
+    var soilToFertilizer = arrayOf<Mapping>()
+    var fertilizerToWater = arrayOf<Mapping>()
+    var waterToLight = arrayOf<Mapping>()
+    var lightToTemp = arrayOf<Mapping>()
+    var tempToHumidity = arrayOf<Mapping>()
+    var humidityToLocation = arrayOf<Mapping>()
+
+    
+    var currentLine = lines.removeAt(0)
+    
+    
+    currentLine = lines.removeAt(0)
+
+    while ( currentLine.isNotEmpty() ) {
+        currentLine = lines.removeAt(0)
+        if ( currentLine.isNotEmpty() ) {
+            var (des, src, range) = currentLine.split("\\s+".toRegex()).map { it.toLong() }
+            seedToSoil += Mapping(src, des, range)
+        }
+    }
+
+    var soils = seeds.map { 
+        var soil = it
+        var soil2 = it
+        seedToSoil.forEach { 
+            if ( it.isPresent(soil) ) {
+                soil2 = it.getOrKey(soil)
+            }
+        }
+        soil2
+    }
+    
+    // println("${soils} Soils")
+    
+
+    currentLine = lines.removeAt(0)
+
+    while ( currentLine.isNotEmpty() ) {
+        currentLine = lines.removeAt(0)
+        if ( currentLine.isNotEmpty() ) {
+            var (des, src, range) = currentLine.split("\\s+".toRegex()).map { it.toLong() }
+            soilToFertilizer += Mapping(src, des, range)
+        }
+    }
+
+    var fertilizers = soils.map { 
+        var fertilizer = it
+        var fertilizer2 = it
+        soilToFertilizer.forEach { 
+            if ( it.isPresent(fertilizer) ) {
+                fertilizer2 = it.getOrKey(fertilizer)
+            }
+        }
+        fertilizer2
+    }
+
+    // println("${fertilizers} fertilizer")
+
+    currentLine = lines.removeAt(0)
+
+    while ( currentLine.isNotEmpty() ) {
+        currentLine = lines.removeAt(0)
+        if ( currentLine.isNotEmpty() ) {
+            var (des, src, range) = currentLine.split("\\s+".toRegex()).map { it.toLong() }
+            fertilizerToWater += Mapping(src, des, range)
+        }
+    }
+
+
+    var waters = fertilizers.map { 
+        var water = it
+        var water2 = it
+        fertilizerToWater.forEach { 
+            if ( it.isPresent(water) ) {
+                water2 = it.getOrKey(water)
+            }
+        }
+        water2
+    }
+
+    // println("${waters} water")
+
+    currentLine = lines.removeAt(0)
+
+    while ( currentLine.isNotEmpty() ) {
+        currentLine = lines.removeAt(0)
+        if ( currentLine.isNotEmpty() ) {
+            var (des, src, range) = currentLine.split("\\s+".toRegex()).map { it.toLong() }
+            waterToLight += Mapping(src, des, range)
+        }
+    }
+
+    var lights = waters.map { 
+        var light = it
+        var light2 = it
+        waterToLight.forEach { 
+            if ( it.isPresent(light) ) {
+                light2 = it.getOrKey(light)
+            }
+        }
+        light2
+    }
+
+    // println("${lights} light")
+
+    currentLine = lines.removeAt(0)
+
+    while ( currentLine.isNotEmpty() ) {
+        currentLine = lines.removeAt(0)
+        if ( currentLine.isNotEmpty() ) {
+            var (des, src, range) = currentLine.split("\\s+".toRegex()).map { it.toLong() }
+            lightToTemp += Mapping(src, des, range)
+        }
+    }
+
+    var temps = lights.map { 
+        var temp = it
+        var temp2 = it
+        lightToTemp.forEach { 
+            if ( it.isPresent(temp) ) {
+                temp2 = it.getOrKey(temp)
+            }
+        }
+        temp2
+    }
+
+    // println("${temps} temp")
+
+    currentLine = lines.removeAt(0)
+
+    while ( currentLine.isNotEmpty() ) {
+        currentLine = lines.removeAt(0)
+        if ( currentLine.isNotEmpty() ) {
+            var (des, src, range) = currentLine.split("\\s+".toRegex()).map { it.toLong() }
+            tempToHumidity += Mapping(src, des, range)
+        }
+    }
+
+    var humidities = temps.map { 
+        var humidity = it
+        var humidity2 = it
+        tempToHumidity.forEach { 
+            if ( it.isPresent(humidity) ) {
+                humidity2 = it.getOrKey(humidity)
+            }
+        }
+        humidity2
+    }
+
+    // println("${humidities} humidity")
+
+    currentLine = lines.removeAt(0)
+
+    while ( currentLine.isNotEmpty() && lines.isNotEmpty()) {
+        currentLine = lines.removeAt(0)
+        if ( currentLine.isNotEmpty() ) {
+            var (des, src, range) = currentLine.split("\\s+".toRegex()).map { it.toLong() }
+            humidityToLocation += Mapping(src, des, range)
+        }
+    }
+
+    var locations = humidities.map { 
+        var location = it
+        var location2 = it
+        humidityToLocation.forEach { 
+            if ( it.isPresent(location) ) {
+                location2 = it.getOrKey(location)
+            }
+        }
+        location2
+    }
+
+    // println("${locations} location")
+
+    println("Result 1 : ${locations.min()}")
+
+
+}
