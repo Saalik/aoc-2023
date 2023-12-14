@@ -74,7 +74,9 @@ fun main() {
 }
 
 fun <K, V> MutableMap<K, MutableList<V>>.addToMultimap(key: K, value: V) {
-    this.computeIfAbsent(key) { mutableListOf() }.add(value)
+    val list = this.getOrDefault(key, mutableListOf())
+    list.add(value)
+    this[key] = list
 }
 
 fun searchNeighbourSignal(h: Int, w: Int, multiMap: Map<Int, MutableList<Int>>) : Boolean {
